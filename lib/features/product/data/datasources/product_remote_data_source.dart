@@ -80,12 +80,13 @@ class FirebaseProductDataSource implements ProductRemoteDataSource {
   }
 
   Future<String> _uploadImage(File file) async {
-    if (_cloudinary == null) {
+    final cloudinary = _cloudinary;
+    if (cloudinary == null) {
       throw Exception(
         'Cloudinary is not configured. Set cloudinaryCloudName and cloudinaryUploadPreset in AppConstants.',
       );
     }
-    final response = await _cloudinary!.uploadFile(
+    final response = await cloudinary.uploadFile(
       CloudinaryFile.fromFile(
         file.path,
         resourceType: CloudinaryResourceType.Image,

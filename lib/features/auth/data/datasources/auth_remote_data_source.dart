@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase;
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 import '../../domain/entities/user.dart';
 import '../models/user_model.dart';
@@ -20,20 +19,20 @@ abstract interface class AuthRemoteDataSource {
 }
 
 class FirebaseAuthDataSource implements AuthRemoteDataSource {
-  final firebase.FirebaseAuth _auth;
+  final fb.FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
 
   FirebaseAuthDataSource({
-    FirebaseAuth? auth,
+    fb.FirebaseAuth? auth,
     FirebaseFirestore? firestore,
-  })  : _auth = auth ?? FirebaseAuth.instance,
+  })  : _auth = auth ?? fb.FirebaseAuth.instance,
         _firestore = firestore ?? FirebaseFirestore.instance;
 
   static const _users = 'users';
 
   // ── Firestore helpers ────────────────────────────────────────────────────
 
-  Future<UserModel> _fetchOrCreate(User firebaseUser) async {
+  Future<UserModel> _fetchOrCreate(fb.User firebaseUser) async {
     final doc =
     await _firestore.collection(_users).doc(firebaseUser.uid).get();
 
@@ -84,7 +83,7 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
       id: cred.user!.uid,
       email: email,
       displayName: displayName,
-      role: UserRole.customer, // imported from domain entity
+      role: UserRole.customer,
       emailVerified: false,
       createdAt: DateTime.now(),
     );
