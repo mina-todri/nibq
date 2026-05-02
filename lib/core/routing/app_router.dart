@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/signup_screen.dart';
+import '../../features/product/presentation/screens/product_list_screen.dart';
+
 class AppRouter {
   // Auth
   static const login = '/login';
@@ -34,4 +39,24 @@ class AppRouter {
   static const help = '/help';
 
   AppRouter._();
+
+  static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case login:
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case signup:
+        return MaterialPageRoute(builder: (_) => const SignupScreen());
+      case productList:
+      case home:
+        return MaterialPageRoute(builder: (_) => const ProductListScreen());
+      default:
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Text('Route ${settings.name} not found'),
+            ),
+          ),
+        );
+    }
+  }
 }
