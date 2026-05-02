@@ -43,3 +43,30 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# OpenCode and local tooling
+.opencode/
+
+# Old/legacy code
+old_lib/
+
+# Analysis outputs
+analysis.txt
+analyze_out.txt
+
+# Project notes/generated files
+directory-tree.txt
+lift-chunks.md
+prompt.txt
+
+# Dev tools config
+devtools_options.yaml
+
+# IntelliJ
+*.iml
+nibq.iml
+
+# Java/Flutter logs
+*.log
+hs_err_pid*.log
+flutter_*.log
