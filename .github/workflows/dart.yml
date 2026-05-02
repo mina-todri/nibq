@@ -1,0 +1,42 @@
+name: Flutter CI
+
+# الـ Workflow هيشتغل لما ترفع (Push) أو تفتح (PR) على فرع master
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. سحب الكود من المستودع
+      - uses: actions/checkout@v4
+
+      # 2. تثبيت Flutter SDK (أفضل من تثبيت Dart لوحده للمشاريع دي)
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x' # هيستخدم أحدث نسخة مستقرة من 3
+          channel: 'stable'
+
+      # 3. تحميل المكتبات (Dependencies)
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4. التأكد من تنسيق الكود (Formatting)
+      # دي خطوة اختيارية بس بتخلي الكود دايماً نضيف
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      # 5. تحليل الكود (Static Analysis)
+      # ضفنا --fatal-infos عشان لو في أي ملحوظة بسيطة يرفض الـ Merge ويجبرك تصلحها
+      - name: Analyze project source
+        run: flutter analyze --fatal-infos
+
+      # 6. تشغيل الاختبارات
+      # تم تغيير dart test إلى flutter test لأن مشروعك بيعتمد على Flutter
+      - name: Run tests
+        run: flutter test
