@@ -1,0 +1,111 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Default Security ──────────────────────────────────────────────────
+    // Deny all reads and writes by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ── Helper functions ──────────────────────────────────────────────────
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check admin status via the users collection
+    function isAdmin() {
+      return isAuthenticated() &&
+                          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // ── Products ──────────────────────────────────────────────────────────
+    match /products/{productId} {
+      // Anyone can browse the catalog
+      allow read: if true;
+
+      // Only admins can create or delete products
+      allow create, delete: if isAdmin();
+
+      // Admins can update anything.
+      // Customers can only update the 'stock' field (via checkout transaction).
+      allow update: if isAdmin()
+          || (isAuthenticated() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock']));
+    }
+
+    // ── Global Settings ───────────────────────────────────────────────────
+    match /settings/global {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Users ─────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+
+      // On creation, users can only set their role to 'customer'
+      allow create: if isOwner(userId)
+          && request.resource.data.get('role', 'customer') == 'customer';
+
+      // On update, owners can change their info EXCEPT the 'role' field (prevents admin escalation)
+      // Admins can change anything.
+      allow update: if isAdmin()
+          || (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']));
+
+      allow delete: if isAdmin();
+
+      // Sub-collections like addresses
+      match /{allSubcollections=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // ── Orders ────────────────────────────────────────────────────────────
+    match /orders/{orderId} {
+      // Users can read their own orders; admin can read all
+      allow read: if isAuthenticated()
+          && (resource.data.userId == request.auth.uid || isAdmin());
+
+      // Users can create orders as long as they set their own userId
+      allow create: if isAuthenticated()
+          && request.resource.data.userId == request.auth.uid;
+
+      // Only admins can update status (confirm/ship) or delete orders.
+      // Users can cancel ONLY their own orders, ONLY when status is pending,
+      // and ONLY the status field is being changed.
+      allow update: if isAdmin()
+          || (
+            isAuthenticated()
+            && resource.data.userId == request.auth.uid
+            && resource.data.status == 'pending'
+            && request.resource.data.status == 'cancelled'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+          );
+      allow delete: if isAdmin();
+    }
+
+    // ── Carts ─────────────────────────────────────────────────────────────
+    // Top-level collection keyed by userId
+    match /carts/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      match /{allPaths=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // ── Favorites ─────────────────────────────────────────────────────────
+    // Top-level collection keyed by userId
+    match /favorites/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      match /{allPaths=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+  }
+}

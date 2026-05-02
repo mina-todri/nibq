@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "956047851248",
+    "project_id": "nibq-app",
+    "storage_bucket": "nibq-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956047851248:android:90791037477555804b4c35",
+        "android_client_info": {
+          "package_name": "com.example.nibq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1CXxC0SJVEiDktkyFjpbhzZ_c5jzet1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
