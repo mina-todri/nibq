@@ -7,9 +7,14 @@ import 'core/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  
+  // Check if Firebase is already initialized to avoid duplicate-app error
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+  
   runApp(const ProviderScope(child: MyApp()));
 }
 
