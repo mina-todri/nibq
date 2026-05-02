@@ -34,16 +34,19 @@ class ProductModel extends Product {
 
   static List<ProductVariantModel> _parseVariants(dynamic raw) {
     if (raw is! List) return [];
-    return raw.map((item) {
-      if (item is Map) {
-        return ProductVariantModel.fromMap(Map<String, dynamic>.from(item));
-      }
-      if (item is String) {
-        // Legacy format — migrate gracefully with stock 0.
-        return ProductVariantModel.fromLegacyString(item);
-      }
-      return null;
-    }).whereType<ProductVariantModel>().toList();
+    return raw
+        .map((item) {
+          if (item is Map) {
+            return ProductVariantModel.fromMap(Map<String, dynamic>.from(item));
+          }
+          if (item is String) {
+            // Legacy format — migrate gracefully with stock 0.
+            return ProductVariantModel.fromLegacyString(item);
+          }
+          return null;
+        })
+        .whereType<ProductVariantModel>()
+        .toList();
   }
 
   // ── Model → Firestore ─────────────────────────────────────────────────────

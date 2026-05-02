@@ -14,58 +14,56 @@ import 'auth_state.dart';
 // ── Infrastructure ────────────────────────────────────────────────────────────
 
 final authDataSourceProvider = Provider<AuthRemoteDataSource>(
-      (_) => FirebaseAuthDataSource(),
+  (_) => FirebaseAuthDataSource(),
 );
 
 final authRepositoryProvider = Provider<AuthRepository>(
-      (ref) => AuthRepositoryImpl(ref.watch(authDataSourceProvider)),
+  (ref) => AuthRepositoryImpl(ref.watch(authDataSourceProvider)),
 );
 
 // ── Use cases ─────────────────────────────────────────────────────────────────
 
 final loginUseCaseProvider = Provider(
-      (ref) => LoginUseCase(ref.watch(authRepositoryProvider)),
+  (ref) => LoginUseCase(ref.watch(authRepositoryProvider)),
 );
 
 final registerUseCaseProvider = Provider(
-      (ref) => RegisterUseCase(ref.watch(authRepositoryProvider)),
+  (ref) => RegisterUseCase(ref.watch(authRepositoryProvider)),
 );
 
 final logoutUseCaseProvider = Provider(
-      (ref) => LogoutUseCase(ref.watch(authRepositoryProvider)),
+  (ref) => LogoutUseCase(ref.watch(authRepositoryProvider)),
 );
 
 final getCurrentUserUseCaseProvider = Provider(
-      (ref) => GetCurrentUserUseCase(ref.watch(authRepositoryProvider)),
+  (ref) => GetCurrentUserUseCase(ref.watch(authRepositoryProvider)),
 );
 
 // ── Auth state ────────────────────────────────────────────────────────────────
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
-      (ref) => AuthNotifier(ref.watch(authRepositoryProvider)),
+  (ref) => AuthNotifier(ref.watch(authRepositoryProvider)),
 );
 
 // ── Derived convenience providers ─────────────────────────────────────────────
 
 /// The signed-in user, or null.
-final currentUserProvider = Provider<User?>(
-      (ref) {
-    final state = ref.watch(authProvider);
-    return state is AuthAuthenticated ? state.user : null;
-  },
-);
+final currentUserProvider = Provider<User?>((ref) {
+  final state = ref.watch(authProvider);
+  return state is AuthAuthenticated ? state.user : null;
+});
 
 /// True while any auth action is in progress.
 final authLoadingProvider = Provider<bool>(
-      (ref) => ref.watch(authProvider) is AuthLoading,
+  (ref) => ref.watch(authProvider) is AuthLoading,
 );
 
 /// True when a user session is active.
 final isAuthenticatedProvider = Provider<bool>(
-      (ref) => ref.watch(authProvider) is AuthAuthenticated,
+  (ref) => ref.watch(authProvider) is AuthAuthenticated,
 );
 
 /// True when the current user has the admin role.
 final isAdminProvider = Provider<bool>(
-      (ref) => ref.watch(currentUserProvider)?.role == UserRole.admin,
+  (ref) => ref.watch(currentUserProvider)?.role == UserRole.admin,
 );

@@ -27,12 +27,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     _listenToAuthChanges();
   }
 
-
   // ── Stream listener ───────────────────────────────────────────────────────
 
   void _listenToAuthChanges() {
     _authSub = _repository.authStateChanges.listen(
-          (user) {
+      (user) {
         state = user == null
             ? const AuthUnauthenticated()
             : AuthAuthenticated(user);
@@ -45,10 +44,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   // ── Auth actions ──────────────────────────────────────────────────────────
 
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     state = const AuthLoading();
     try {
       await _repository.login(email: email, password: password);
@@ -98,6 +94,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (msg.contains('email-already-in-use')) return 'Email already in use';
     return 'حدث خطأ غير متوقع';
   }
+
   @override
   void dispose() {
     _authSub?.cancel();

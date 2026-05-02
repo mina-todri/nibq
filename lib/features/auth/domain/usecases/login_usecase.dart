@@ -6,10 +6,7 @@ class LoginUseCase {
 
   const LoginUseCase(this._repository);
 
-  Future<User> call({
-    required String email,
-    required String password,
-  }) {
+  Future<User> call({required String email, required String password}) {
     return _repository.login(email: email, password: password);
   }
 }

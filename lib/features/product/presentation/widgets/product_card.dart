@@ -6,11 +6,7 @@ class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onTap;
 
-  const ProductCard({
-    super.key,
-    required this.product,
-    required this.onTap,
-  });
+  const ProductCard({super.key, required this.product, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +29,9 @@ class ProductCard extends StatelessWidget {
                       left: 8,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.red,
                           borderRadius: BorderRadius.circular(4),
@@ -41,9 +39,10 @@ class ProductCard extends StatelessWidget {
                         child: Text(
                           '-${product.discountPercent!.toInt()}%',
                           style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -70,20 +69,19 @@ class ProductCard extends StatelessWidget {
                     children: [
                       Text(
                         '${product.finalPrice.toStringAsFixed(2)} ر.س',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       if (product.hasDiscount) ...[
                         const SizedBox(width: 4),
                         Text(
                           '${product.price.toStringAsFixed(2)}',
-                          style:
-                          Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey,
-                            decoration: TextDecoration.lineThrough,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Colors.grey,
+                                decoration: TextDecoration.lineThrough,
+                              ),
                         ),
                       ],
                     ],
@@ -91,8 +89,11 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.star_rounded,
-                          size: 13, color: Colors.amber),
+                      const Icon(
+                        Icons.star_rounded,
+                        size: 13,
+                        color: Colors.amber,
+                      ),
                       const SizedBox(width: 2),
                       Text(
                         product.rating.toStringAsFixed(1),

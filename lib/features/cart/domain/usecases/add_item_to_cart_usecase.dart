@@ -35,11 +35,7 @@ class AddItemToCartUseCase {
     return _repository.setItem(userId, updated);
   }
 
-  CartItem? _find(
-      List<CartItem> items,
-      String productId,
-      String variantName,
-      ) {
+  CartItem? _find(List<CartItem> items, String productId, String variantName) {
     return items
         .where((i) => i.productId == productId && i.variantName == variantName)
         .cast<CartItem?>()

@@ -20,7 +20,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
   void _listen() {
     state = const ProductLoading();
     _streamSub = _repository.watchAll().listen(
-          (products) => state = ProductLoaded(products),
+      (products) => state = ProductLoaded(products),
       onError: (Object e) => state = ProductError(e.toString()),
     );
   }

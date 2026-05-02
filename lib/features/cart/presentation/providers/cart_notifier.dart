@@ -27,13 +27,13 @@ class CartNotifier extends StateNotifier<CartState> {
     required RemoveItemFromCartUseCase removeItem,
     required UpdateItemQuantityUseCase updateQuantity,
     required ClearCartUseCase clearCart,
-  })  : _userId = userId,
-        _repository = repository,
-        _addItem = addItem,
-        _removeItem = removeItem,
-        _updateQuantity = updateQuantity,
-        _clearCart = clearCart,
-        super(const CartInitial()) {
+  }) : _userId = userId,
+       _repository = repository,
+       _addItem = addItem,
+       _removeItem = removeItem,
+       _updateQuantity = updateQuantity,
+       _clearCart = clearCart,
+       super(const CartInitial()) {
     _listen();
   }
 
@@ -41,10 +41,12 @@ class CartNotifier extends StateNotifier<CartState> {
 
   void _listen() {
     state = const CartLoading();
-    _streamSub = _repository.watchItems(_userId).listen(
+    _streamSub = _repository
+        .watchItems(_userId)
+        .listen(
           (items) => state = CartLoaded(items),
-      onError: (Object e) => state = CartError(e.toString()),
-    );
+          onError: (Object e) => state = CartError(e.toString()),
+        );
   }
 
   // ── Current items helper ──────────────────────────────────────────────────

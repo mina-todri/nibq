@@ -12,27 +12,27 @@ import 'product_state.dart';
 // ── Infrastructure ────────────────────────────────────────────────────────────
 
 final productDataSourceProvider = Provider<ProductRemoteDataSource>(
-      (_) => FirebaseProductDataSource(),
+  (_) => FirebaseProductDataSource(),
 );
 
 final productRepositoryProvider = Provider<ProductRepository>(
-      (ref) => ProductRepositoryImpl(ref.watch(productDataSourceProvider)),
+  (ref) => ProductRepositoryImpl(ref.watch(productDataSourceProvider)),
 );
 
 // ── Use cases ─────────────────────────────────────────────────────────────────
 
 final watchProductsUseCaseProvider = Provider(
-      (ref) => WatchProductsUseCase(ref.watch(productRepositoryProvider)),
+  (ref) => WatchProductsUseCase(ref.watch(productRepositoryProvider)),
 );
 
 final getCategoriesUseCaseProvider = Provider(
-      (ref) => GetCategoriesUseCase(ref.watch(productRepositoryProvider)),
+  (ref) => GetCategoriesUseCase(ref.watch(productRepositoryProvider)),
 );
 
 // ── Core state ────────────────────────────────────────────────────────────────
 
 final productProvider = StateNotifierProvider<ProductNotifier, ProductState>(
-      (ref) => ProductNotifier(ref.watch(productRepositoryProvider)),
+  (ref) => ProductNotifier(ref.watch(productRepositoryProvider)),
 );
 
 // ── Derived ───────────────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ final filteredProductsProvider = Provider<List<Product>>((ref) {
 
 /// Sorted unique category list derived from live products.
 final categoriesProvider = StreamProvider<List<String>>(
-      (ref) => ref.watch(getCategoriesUseCaseProvider).call(),
+  (ref) => ref.watch(getCategoriesUseCaseProvider).call(),
 );
 
 /// A single product by id, read from the already-loaded list.
@@ -66,5 +66,5 @@ final productByIdProvider = Provider.family<Product?, String>((ref, id) {
 
 /// True while the initial product stream is loading.
 final productLoadingProvider = Provider<bool>(
-      (ref) => ref.watch(productProvider) is ProductLoading,
+  (ref) => ref.watch(productProvider) is ProductLoading,
 );

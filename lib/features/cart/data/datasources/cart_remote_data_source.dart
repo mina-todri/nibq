@@ -14,7 +14,7 @@ class FirebaseCartDataSource implements CartRemoteDataSource {
   final FirebaseFirestore _firestore;
 
   FirebaseCartDataSource({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// `users/{uid}/cart/{itemId}`
   CollectionReference<Map<String, dynamic>> _cartRef(String userId) =>
@@ -25,9 +25,8 @@ class FirebaseCartDataSource implements CartRemoteDataSource {
   @override
   Stream<List<CartItemModel>> watchItems(String userId) {
     return _cartRef(userId).snapshots().map(
-          (snap) => snap.docs
-          .map((doc) => CartItemModel.fromMap(doc.data()))
-          .toList(),
+      (snap) =>
+          snap.docs.map((doc) => CartItemModel.fromMap(doc.data())).toList(),
     );
   }
 
@@ -35,14 +34,16 @@ class FirebaseCartDataSource implements CartRemoteDataSource {
 
   @override
   Future<void> setItem(String userId, CartItem item) {
-    return _cartRef(userId).doc(item.itemId).set(
-      CartItemModel(
-        productId: item.productId,
-        variantName: item.variantName,
-        quantity: item.quantity,
-      ).toMap(),
-      SetOptions(merge: true),
-    );
+    return _cartRef(userId)
+        .doc(item.itemId)
+        .set(
+          CartItemModel(
+            productId: item.productId,
+            variantName: item.variantName,
+            quantity: item.quantity,
+          ).toMap(),
+          SetOptions(merge: true),
+        );
   }
 
   @override

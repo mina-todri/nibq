@@ -52,12 +52,12 @@ class User {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is User &&
-              runtimeType == other.runtimeType &&
-              id == other.id &&
-              email == other.email &&
-              role == other.role &&
-              emailVerified == other.emailVerified;
+      other is User &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          email == other.email &&
+          role == other.role &&
+          emailVerified == other.emailVerified;
 
   @override
   int get hashCode =>

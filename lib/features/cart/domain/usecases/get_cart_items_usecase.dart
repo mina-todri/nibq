@@ -6,6 +6,5 @@ class GetCartItemsUseCase {
 
   const GetCartItemsUseCase(this._repository);
 
-  Stream<List<CartItem>> call(String userId) =>
-      _repository.watchItems(userId);
+  Stream<List<CartItem>> call(String userId) => _repository.watchItems(userId);
 }

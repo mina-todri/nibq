@@ -17,33 +17,33 @@ import 'cart_state.dart';
 // ── Infrastructure ────────────────────────────────────────────────────────────
 
 final cartDataSourceProvider = Provider<CartRemoteDataSource>(
-      (_) => FirebaseCartDataSource(),
+  (_) => FirebaseCartDataSource(),
 );
 
 final cartRepositoryProvider = Provider<CartRepository>(
-      (ref) => CartRepositoryImpl(ref.watch(cartDataSourceProvider)),
+  (ref) => CartRepositoryImpl(ref.watch(cartDataSourceProvider)),
 );
 
 // ── Use cases ─────────────────────────────────────────────────────────────────
 
 final addItemUseCaseProvider = Provider(
-      (ref) => AddItemToCartUseCase(ref.watch(cartRepositoryProvider)),
+  (ref) => AddItemToCartUseCase(ref.watch(cartRepositoryProvider)),
 );
 
 final removeItemUseCaseProvider = Provider(
-      (ref) => RemoveItemFromCartUseCase(ref.watch(cartRepositoryProvider)),
+  (ref) => RemoveItemFromCartUseCase(ref.watch(cartRepositoryProvider)),
 );
 
 final updateQuantityUseCaseProvider = Provider(
-      (ref) => UpdateItemQuantityUseCase(ref.watch(cartRepositoryProvider)),
+  (ref) => UpdateItemQuantityUseCase(ref.watch(cartRepositoryProvider)),
 );
 
 final clearCartUseCaseProvider = Provider(
-      (ref) => ClearCartUseCase(ref.watch(cartRepositoryProvider)),
+  (ref) => ClearCartUseCase(ref.watch(cartRepositoryProvider)),
 );
 
 final getCartItemsUseCaseProvider = Provider(
-      (ref) => GetCartItemsUseCase(ref.watch(cartRepositoryProvider)),
+  (ref) => GetCartItemsUseCase(ref.watch(cartRepositoryProvider)),
 );
 
 // ── Core state ────────────────────────────────────────────────────────────────
@@ -52,14 +52,14 @@ final getCartItemsUseCaseProvider = Provider(
 final cartProvider = StateNotifierProvider.autoDispose
     .family<CartNotifier, CartState, String>(
       (ref, userId) => CartNotifier(
-    userId: userId,
-    repository: ref.watch(cartRepositoryProvider),
-    addItem: ref.watch(addItemUseCaseProvider),
-    removeItem: ref.watch(removeItemUseCaseProvider),
-    updateQuantity: ref.watch(updateQuantityUseCaseProvider),
-    clearCart: ref.watch(clearCartUseCaseProvider),
-  ),
-);
+        userId: userId,
+        repository: ref.watch(cartRepositoryProvider),
+        addItem: ref.watch(addItemUseCaseProvider),
+        removeItem: ref.watch(removeItemUseCaseProvider),
+        updateQuantity: ref.watch(updateQuantityUseCaseProvider),
+        clearCart: ref.watch(clearCartUseCaseProvider),
+      ),
+    );
 
 /// Safe access point — returns CartInitial when no user is signed in.
 /// All UI consumes this, never [cartProvider] directly.
@@ -69,8 +69,7 @@ final activeCartProvider = Provider.autoDispose<CartState>((ref) {
   return ref.watch(cartProvider(user.id));
 });
 
-final activeCartNotifierProvider =
-Provider.autoDispose<CartNotifier?>((ref) {
+final activeCartNotifierProvider = Provider.autoDispose<CartNotifier?>((ref) {
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
   return ref.watch(cartProvider(user.id).notifier);
@@ -108,5 +107,5 @@ final cartTotalProvider = Provider.autoDispose<double>((ref) {
 
 /// True while the cart stream is loading.
 final cartLoadingProvider = Provider.autoDispose<bool>(
-      (ref) => ref.watch(activeCartProvider) is CartLoading,
+  (ref) => ref.watch(activeCartProvider) is CartLoading,
 );

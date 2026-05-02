@@ -15,8 +15,7 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
       _ProductDetailScreenState();
 }
 
-class _ProductDetailScreenState
-    extends ConsumerState<ProductDetailScreen> {
+class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   ProductVariant? _selectedVariant;
 
   @override
@@ -24,9 +23,7 @@ class _ProductDetailScreenState
     final product = ref.watch(productByIdProvider(widget.productId));
 
     if (product == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     // Auto-select first in-stock variant on first render.
@@ -62,10 +59,9 @@ class _ProductDetailScreenState
                   const SizedBox(height: 4),
                   Text(
                     product.category,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.grey),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
 
@@ -78,17 +74,13 @@ class _ProductDetailScreenState
                   const SizedBox(height: 24),
 
                   // Description
-                  Text(
-                    'الوصف',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
+                  Text('الوصف', style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 8),
                   Text(
                     product.description,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(height: 1.6),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(height: 1.6),
                   ),
                   const SizedBox(height: 24),
 
@@ -102,16 +94,14 @@ class _ProductDetailScreenState
                     _VariantSelector(
                       variants: product.variants,
                       selected: _selectedVariant,
-                      onSelect: (v) =>
-                          setState(() => _selectedVariant = v),
+                      onSelect: (v) => setState(() => _selectedVariant = v),
                     ),
                     const SizedBox(height: 24),
                   ],
 
                   // Stock status
                   _StockBadge(
-                    inStock: _selectedVariant?.inStock ??
-                        product.hasAnyStock,
+                    inStock: _selectedVariant?.inStock ?? product.hasAnyStock,
                   ),
                   const SizedBox(height: 32),
                 ],
@@ -142,8 +132,7 @@ class _ProductImage extends StatelessWidget {
     if (imageUrl == null || imageUrl!.isEmpty) {
       return Container(
         color: Colors.grey.shade100,
-        child: const Icon(Icons.image_outlined,
-            size: 64, color: Colors.grey),
+        child: const Icon(Icons.image_outlined, size: 64, color: Colors.grey),
       );
     }
     return Image.network(
@@ -151,8 +140,11 @@ class _ProductImage extends StatelessWidget {
       fit: BoxFit.cover,
       errorBuilder: (_, __, ___) => Container(
         color: Colors.grey.shade100,
-        child: const Icon(Icons.broken_image_outlined,
-            size: 64, color: Colors.grey),
+        child: const Icon(
+          Icons.broken_image_outlined,
+          size: 64,
+          color: Colors.grey,
+        ),
       ),
     );
   }
@@ -169,9 +161,9 @@ class _PriceRow extends StatelessWidget {
       children: [
         Text(
           '${product.finalPrice.toStringAsFixed(2)} ر.س',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         if (product.hasDiscount) ...[
           const SizedBox(width: 8),
@@ -192,7 +184,9 @@ class _PriceRow extends StatelessWidget {
             child: Text(
               '-${product.discountPercent!.toInt()}%',
               style: const TextStyle(
-                  color: Colors.red, fontWeight: FontWeight.bold),
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -219,10 +213,9 @@ class _RatingRow extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           '(${product.reviewCount})',
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall
-              ?.copyWith(color: Colors.grey),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
         ),
       ],
     );
@@ -253,8 +246,7 @@ class _VariantSelector extends StatelessWidget {
           onTap: outOfStock ? null : () => onSelect(variant),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               color: isSelected
                   ? Theme.of(context).colorScheme.primary
@@ -276,9 +268,7 @@ class _VariantSelector extends StatelessWidget {
                     : isSelected
                     ? Colors.white
                     : null,
-                decoration: outOfStock
-                    ? TextDecoration.lineThrough
-                    : null,
+                decoration: outOfStock ? TextDecoration.lineThrough : null,
               ),
             ),
           ),
@@ -316,10 +306,7 @@ class _AddToCartBar extends StatelessWidget {
   final Product product;
   final ProductVariant? selectedVariant;
 
-  const _AddToCartBar({
-    required this.product,
-    required this.selectedVariant,
-  });
+  const _AddToCartBar({required this.product, required this.selectedVariant});
 
   bool get _canAdd {
     if (product.variants.isEmpty) return false;
@@ -336,21 +323,20 @@ class _AddToCartBar extends StatelessWidget {
           child: FilledButton.icon(
             onPressed: _canAdd
                 ? () {
-              // Cart feature will hook here.
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'تمت إضافة ${product.name} إلى السلة',
-                  ),
-                ),
-              );
-            }
+                    // Cart feature will hook here.
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('تمت إضافة ${product.name} إلى السلة'),
+                      ),
+                    );
+                  }
                 : null,
             icon: const Icon(Icons.shopping_cart_outlined),
             label: const Text('إضافة إلى السلة'),
             style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
         ),

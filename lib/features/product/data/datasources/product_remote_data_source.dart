@@ -23,8 +23,8 @@ class FirebaseProductDataSource implements ProductRemoteDataSource {
   FirebaseProductDataSource({
     FirebaseFirestore? firestore,
     CloudinaryPublic? cloudinary,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _cloudinary = cloudinary ?? _buildCloudinary();
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _cloudinary = cloudinary ?? _buildCloudinary();
 
   static CloudinaryPublic? _buildCloudinary() {
     final cloudName = AppConstants.cloudinaryCloudName;
@@ -37,11 +37,14 @@ class FirebaseProductDataSource implements ProductRemoteDataSource {
 
   @override
   Stream<List<ProductModel>> watchAll() {
-    return _firestore.collection(_collection).snapshots().map(
+    return _firestore
+        .collection(_collection)
+        .snapshots()
+        .map(
           (snap) => snap.docs
-          .map((doc) => ProductModel.fromMap(doc.data(), doc.id))
-          .toList(),
-    );
+              .map((doc) => ProductModel.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   @override

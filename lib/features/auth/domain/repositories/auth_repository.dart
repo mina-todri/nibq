@@ -10,10 +10,7 @@ abstract interface class AuthRepository {
   /// Emits the user on login and null on logout.
   Stream<User?> get authStateChanges;
 
-  Future<User> login({
-    required String email,
-    required String password,
-  });
+  Future<User> login({required String email, required String password});
 
   Future<User> register({
     required String email,

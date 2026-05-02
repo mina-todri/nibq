@@ -26,10 +26,10 @@ class CartItem {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is CartItem &&
-              runtimeType == other.runtimeType &&
-              productId == other.productId &&
-              variantName == other.variantName;
+      other is CartItem &&
+          runtimeType == other.runtimeType &&
+          productId == other.productId &&
+          variantName == other.variantName;
 
   @override
   int get hashCode => productId.hashCode ^ variantName.hashCode;

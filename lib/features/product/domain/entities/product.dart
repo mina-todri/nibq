@@ -27,8 +27,7 @@ class Product {
 
   // ── Computed ──────────────────────────────────────────────────────────────
 
-  bool get hasDiscount =>
-      discountPercent != null && discountPercent! > 0;
+  bool get hasDiscount => discountPercent != null && discountPercent! > 0;
 
   double get finalPrice {
     if (!hasDiscount) return price;
@@ -73,12 +72,12 @@ class Product {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Product &&
-              runtimeType == other.runtimeType &&
-              id == other.id &&
-              price == other.price &&
-              discountPercent == other.discountPercent &&
-              variants == other.variants;
+      other is Product &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          price == other.price &&
+          discountPercent == other.discountPercent &&
+          variants == other.variants;
 
   @override
   int get hashCode =>

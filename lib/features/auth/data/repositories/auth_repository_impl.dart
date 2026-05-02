@@ -17,10 +17,8 @@ class AuthRepositoryImpl implements AuthRepository {
   Stream<User?> get authStateChanges => _dataSource.authStateChanges;
 
   @override
-  Future<User> login({
-    required String email,
-    required String password,
-  }) => _dataSource.login(email: email, password: password);
+  Future<User> login({required String email, required String password}) =>
+      _dataSource.login(email: email, password: password);
 
   @override
   Future<User> register({

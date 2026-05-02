@@ -7,14 +7,14 @@ import 'core/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Check if Firebase is already initialized to avoid duplicate-app error
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
-  
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -26,10 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nibq',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       onGenerateRoute: AppRouter.onGenerateRoute,
       initialRoute: AppRouter.login,
     );

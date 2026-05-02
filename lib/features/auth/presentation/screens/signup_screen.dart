@@ -35,8 +35,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   void _handleStateChange(AuthState? prev, AuthState next) {
     if (next is AuthAuthenticated) {
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(AppRouter.home, (_) => false);
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRouter.home, (_) => false);
     }
     if (next is AuthError) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -51,11 +52,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     FocusScope.of(context).unfocus();
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    await ref.read(authProvider.notifier).register(
-      email: _emailCtrl.text.trim(),
-      password: _passCtrl.text,
-      displayName: _nameCtrl.text.trim(),
-    );
+    await ref
+        .read(authProvider.notifier)
+        .register(
+          email: _emailCtrl.text.trim(),
+          password: _passCtrl.text,
+          displayName: _nameCtrl.text.trim(),
+        );
   }
 
   // ── Build ─────────────────────────────────────────────────────────────────
@@ -88,9 +91,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const SizedBox(height: 8),
                 Text(
                   'أدخل بياناتك للبدء',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 36),

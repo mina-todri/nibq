@@ -1,10 +1,7 @@
 import '../../domain/entities/product_variant.dart';
 
 class ProductVariantModel extends ProductVariant {
-  const ProductVariantModel({
-    required super.name,
-    required super.stock,
-  });
+  const ProductVariantModel({required super.name, required super.stock});
 
   factory ProductVariantModel.fromMap(Map<String, dynamic> map) {
     return ProductVariantModel(

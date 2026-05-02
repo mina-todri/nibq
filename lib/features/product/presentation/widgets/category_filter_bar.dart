@@ -23,15 +23,16 @@ class CategoryFilterBar extends ConsumerWidget {
           separatorBuilder: (_, __) => const SizedBox(width: 8),
           itemBuilder: (context, index) {
             final category = categories[index];
-            final isSelected = selected == category ||
-                (selected.isEmpty && index == 0);
+            final isSelected =
+                selected == category || (selected.isEmpty && index == 0);
 
             return FilterChip(
               label: Text(category),
               selected: isSelected,
-              onSelected: (_) => ref
-                  .read(selectedCategoryProvider.notifier)
-                  .state = isSelected ? '' : category,
+              onSelected: (_) =>
+                  ref.read(selectedCategoryProvider.notifier).state = isSelected
+                  ? ''
+                  : category,
             );
           },
         ),

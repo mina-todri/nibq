@@ -22,19 +22,16 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
   final fb.FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
 
-  FirebaseAuthDataSource({
-    fb.FirebaseAuth? auth,
-    FirebaseFirestore? firestore,
-  })  : _auth = auth ?? fb.FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance;
+  FirebaseAuthDataSource({fb.FirebaseAuth? auth, FirebaseFirestore? firestore})
+    : _auth = auth ?? fb.FirebaseAuth.instance,
+      _firestore = firestore ?? FirebaseFirestore.instance;
 
   static const _users = 'users';
 
   // ── Firestore helpers ────────────────────────────────────────────────────
 
   Future<UserModel> _fetchOrCreate(fb.User firebaseUser) async {
-    final doc =
-    await _firestore.collection(_users).doc(firebaseUser.uid).get();
+    final doc = await _firestore.collection(_users).doc(firebaseUser.uid).get();
 
     if (doc.exists) {
       return UserModel.fromMap(doc.data()!);
@@ -88,10 +85,7 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
       createdAt: DateTime.now(),
     );
 
-    await _firestore
-        .collection(_users)
-        .doc(cred.user!.uid)
-        .set(model.toMap());
+    await _firestore.collection(_users).doc(cred.user!.uid).set(model.toMap());
 
     return model;
   }
@@ -116,9 +110,11 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
           .collection(_users)
           .doc(firebaseUser.uid)
           .snapshots()
-          .map((doc) => doc.exists
-          ? UserModel.fromMap(doc.data()!)
-          : UserModel.fromFirebaseUser(firebaseUser));
+          .map(
+            (doc) => doc.exists
+                ? UserModel.fromMap(doc.data()!)
+                : UserModel.fromFirebaseUser(firebaseUser),
+          );
     });
   }
 }

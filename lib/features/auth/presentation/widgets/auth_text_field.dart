@@ -44,15 +44,16 @@ class _AuthTextFieldState extends State<AuthTextField> {
       decoration: InputDecoration(
         labelText: widget.label,
         hintText: widget.hint,
-        prefixIcon:
-        widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+        prefixIcon: widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
         suffixIcon: widget.obscureText
             ? IconButton(
-          icon: Icon(_obscure
-              ? Icons.visibility_outlined
-              : Icons.visibility_off_outlined),
-          onPressed: () => setState(() => _obscure = !_obscure),
-        )
+                icon: Icon(
+                  _obscure
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+                onPressed: () => setState(() => _obscure = !_obscure),
+              )
             : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),

@@ -31,8 +31,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _handleStateChange(AuthState? prev, AuthState next) {
     if (next is AuthAuthenticated) {
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(AppRouter.home, (_) => false);
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRouter.home, (_) => false);
     }
     if (next is AuthError) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -47,10 +48,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     FocusScope.of(context).unfocus();
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    await ref.read(authProvider.notifier).login(
-      email: _emailCtrl.text.trim(),
-      password: _passCtrl.text,
-    );
+    await ref
+        .read(authProvider.notifier)
+        .login(email: _emailCtrl.text.trim(), password: _passCtrl.text);
   }
 
   // ── Build ─────────────────────────────────────────────────────────────────
@@ -79,9 +79,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 8),
                 Text(
                   'سجّل دخولك للمتابعة',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),

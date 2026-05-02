@@ -30,14 +30,12 @@ class ProductListScreen extends ConsumerWidget {
               ),
               ProductError(:final message) => _ErrorView(
                 message: message,
-                onRetry: () =>
-                    ref.invalidate(productProvider),
+                onRetry: () => ref.invalidate(productProvider),
               ),
               ProductLoaded() when filtered.isEmpty => const _EmptyView(),
               _ => GridView.builder(
                 padding: const EdgeInsets.all(16),
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
@@ -84,7 +82,10 @@ class _ErrorView extends StatelessWidget {
             const SizedBox(height: 16),
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),
-            FilledButton(onPressed: onRetry, child: const Text('إعادة المحاولة')),
+            FilledButton(
+              onPressed: onRetry,
+              child: const Text('إعادة المحاولة'),
+            ),
           ],
         ),
       ),
