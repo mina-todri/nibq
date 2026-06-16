@@ -1,37 +1,127 @@
+// lib/core/routing/app_router.dart
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../features/auth/login_screen.dart';
+import '../../features/auth/signup_screen.dart';
+import '../../features/auth/forgot_password_screen.dart';
+import '../../features/home/home_screen.dart';
+import '../../features/product/product_detail_screen.dart';
+import '../../features/cart/cart_screen.dart';
+import '../../features/checkout/checkout_screen.dart';
+import '../../features/checkout/order_success_screen.dart';
+import '../../features/profile/profile_screen.dart';
+import '../../features/profile/edit_profile_screen.dart';
+import '../../features/settings/settings_screen.dart';
+import '../../features/search/search_screen.dart';
+import '../../features/favorites/favorites_screen.dart';
+import '../../features/orders/orders_screen.dart';
+import '../../features/addresses/addresses_screen.dart';
+import '../../features/help/help_screen.dart';
+import '../../features/notifications/notifications_screen.dart';
+import '../../features/about/about_screen.dart';
+import '../../features/admin/admin_dashboard_screen.dart';
+import '../../features/auth/providers/auth_provider.dart';
+
 class AppRouter {
-  // Auth
-  static const login = '/login';
-  static const signup = '/signup';
-  static const forgotPassword = '/forgot-password';
+  static final navigatorKey = GlobalKey<NavigatorState>();
+  static ProviderContainer? container;
 
-  // Main
-  static const home = '/';
-  static const productList = '/products';
-  static const productDetail = '/products/:id';
-  static const cart = '/cart';
-  static const checkout = '/checkout';
-  static const orders = '/orders';
-  static const orderDetail = '/orders/:id';
+  static const String login = '/login';
+  static const String signup = '/signup';
+  static const String forgot = '/forgot';
+  static const String home = '/home';
+  static const String product = '/product';
+  static const String cart = '/cart';
+  static const String checkout = '/checkout';
+  static const String orderSuccess = '/order-success';
+  static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
+  static const String settings = '/settings';
+  static const String search = '/search';
+  static const String favorites = '/favorites';
+  static const String orders = '/orders';
+  static const String addresses = '/addresses';
+  static const String notifications = '/notifications';
+  static const String about = '/about';
+  static const String help = '/help';
+  static const String admin = '/admin';
 
-  // Profile
-  static const profile = '/profile';
-  static const editProfile = '/profile/edit';
-  static const addresses = '/addresses';
-  static const favorites = '/favorites';
-  static const settings = '/settings';
-  static const notifications = '/notifications';
+  static Route<dynamic> onGenerateRoute(RouteSettings s) {
+    final isAuthenticated = container?.read(isAuthenticatedProvider) ?? false;
+    final isAdminUser = container?.read(isAdminProvider) ?? false;
 
-  // Admin
-  static const adminDashboard = '/admin';
-  static const adminProducts = '/admin/products';
-  static const adminOrders = '/admin/orders';
-  static const adminInventory = '/admin/inventory';
-  static const adminSettings = '/admin/settings';
-  static const addEditProduct = '/admin/products/:id';
+    switch (s.name) {
+      case login:        return _fade(const LoginScreen(), name: login);
+      case signup:       return _fade(const SignupScreen(), name: signup);
+      case forgot:       return _fade(const ForgotPasswordScreen(), name: forgot);
+      case home:         return _fade(const HomeScreen(), name: home);
+      case product:      return _fade(const ProductDetailScreen(), name: product, arguments: s.arguments);
+      
+      case cart:         
+        return _guarded(const CartScreen(), name: cart, isAuthenticated: isAuthenticated);
+      case checkout:     
+        return _guarded(const CheckoutScreen(), name: checkout, isAuthenticated: isAuthenticated);
+      case orderSuccess: 
+        return _guarded(const OrderSuccessScreen(), name: orderSuccess, isAuthenticated: isAuthenticated, arguments: s.arguments);
+      case profile:      
+        return _guarded(const ProfileScreen(), name: profile, isAuthenticated: isAuthenticated);
+      case editProfile:  
+        return _guarded(const EditProfileScreen(), name: editProfile, isAuthenticated: isAuthenticated);
+      case AppRouter.settings: 
+        return _fade(const SettingsScreen(), name: AppRouter.settings);
+      case search:       return _fade(const SearchScreen(), name: search);
+      case favorites:    
+        return _guarded(const FavoritesScreen(), name: favorites, isAuthenticated: isAuthenticated);
+      case orders:       
+        return _guarded(const OrdersScreen(), name: orders, isAuthenticated: isAuthenticated);
+      case addresses:    
+        return _guarded(const AddressesScreen(), name: addresses, isAuthenticated: isAuthenticated);
+      case notifications:
+        return _guarded(const NotificationsScreen(), name: notifications, isAuthenticated: isAuthenticated);
+      case about:        return _fade(const AboutScreen(), name: about);
+      case help:         return _fade(const HelpScreen(), name: help);
+      case admin:        
+        return _guarded(const AdminDashboardScreen(), name: admin, isAuthenticated: isAuthenticated, requiresAdmin: true, isAdmin: isAdminUser);
+      
+      default:           
+        debugPrint('[AppRouter] Unknown route: ${s.name}');
+        return _fade(const LoginScreen(), name: login);
+    }
+  }
 
-  // Other
-  static const about = '/about';
-  static const help = '/help';
+  static Route<dynamic> _guarded(
+    Widget page, {
+    required String name,
+    required bool isAuthenticated,
+    bool requiresAdmin = false,
+    bool isAdmin = false,
+    Object? arguments,
+  }) {
+    if (!isAuthenticated) {
+      return _fade(const LoginScreen(), name: login);
+    }
+    if (requiresAdmin && !isAdmin) {
+      return _fade(const HomeScreen(), name: home);
+    }
+    return _fade(page, name: name, arguments: arguments);
+  }
 
-  AppRouter._();
+  static PageRouteBuilder _fade(Widget page, {String? name, Object? arguments}) =>
+      PageRouteBuilder(
+        pageBuilder: (ctx, anim, secondAnim) => page,
+        settings: RouteSettings(name: name, arguments: arguments),
+        transitionsBuilder: (ctx, anim, secondAnim, child) =>
+            FadeTransition(opacity: anim, child: child),
+      );
+
+  static String getInitialRoute(bool isAuthenticated) =>
+      isAuthenticated ? home : login;
+
+  static void navigateToHome(BuildContext context) =>
+      Navigator.of(context).pushNamedAndRemoveUntil(home, (_) => false);
+
+  static void navigateToLogin(BuildContext context) =>
+      Navigator.of(context).pushNamedAndRemoveUntil(login, (_) => false);
 }
