@@ -1,46 +1,40 @@
+// lib/main.dart
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'app.dart';
 import 'firebase_options.dart';
 import 'core/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Robust Firebase initialization to prevent duplicate-app errors
-  // Handles: first launch, hot restart, and edge cases
-  await _initializeFirebase();
-  
-  runApp(const ProviderScope(child: MyApp()));
-}
 
-Future<void> _initializeFirebase() async {
-  try {
-    // Try to initialize - this will throw if already initialized
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } on FirebaseException catch (e) {
-    // If it's a duplicate-app error, Firebase is already initialized - that's fine
-    if (e.code != 'duplicate-app') {
-      rethrow;
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Catch Flutter framework errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    // In production: log to crashlytics
+    if (!kDebugMode) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
     }
-    // Already initialized, nothing to do
-  }
-}
+  };
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (!kDebugMode) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    }
+    return true;
+  };
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Nibq',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      onGenerateRoute: AppRouter.onGenerateRoute,
-      initialRoute: AppRouter.login,
-    );
-  }
+  final container = ProviderContainer();
+  AppRouter.container = container;
+
+  runApp(UncontrolledProviderScope(
+    container: container,
+    child: const ArtStudioApp(),
+  ));
 }

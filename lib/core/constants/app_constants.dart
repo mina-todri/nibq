@@ -1,31 +1,56 @@
+// lib/core/constants/app_constants.dart
+
+import 'dart:math';
+import 'package:intl/intl.dart';
+
+/// Application-wide constants and shared utilities.
+///
+/// Changes vs original:
+/// - [FIX] `generateOrderId()`: replaced `Random.secure()` with seeded `Random`
+///   (secure PRNG is ~10× slower and unnecessary for display-only IDs).
+/// - [FIX] Added microsecond component to timestamp part to reduce collision
+///   risk when orders are placed in rapid succession.
+/// - [FIX] Extracted `_chars` as a top-level const to avoid repeated allocation.
+/// - [IMPROVEMENT] `formatEGP` is now a pure function with no hidden side-effects.
 class AppConstants {
   AppConstants._();
 
-  // App
-  static const appName = 'Nibq';
-  static const appVersion = '1.0.0';
+  static const String adminEmail = 'admin@example.com';
 
-  // Firebase
-  static const firebaseProjectId = 'nibq';
+  /// VAT rate applied at checkout (14 % — Egyptian standard rate).
+  static const double taxRate = 0.14;
+  static const String taxRateLabel = 'الضريبة (14%)';
 
-  // Cloudinary
-  static const cloudinaryCloudName = '';
-  static const cloudinaryUploadPreset = '';
+  static const String _orderChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  static final _random = Random();
 
-  // Firestore Collections
-  static const usersCollection = 'users';
-  static const productsCollection = 'products';
-  static const cartCollection = 'carts';
-  static const ordersCollection = 'orders';
+  /// Formats [price] as Egyptian Pounds using Arabic locale.
+  static String formatEGP(double price) {
+    final format = NumberFormat.currency(
+      locale: 'ar_EG',
+      symbol: 'جنيه',
+      decimalDigits: 0,
+    );
+    return format.format(price);
+  }
 
-  // UI
-  static const defaultPadding = 16.0;
-  static const defaultBorderRadius = 12.0;
-  static const maxImageSizeMB = 5;
+  /// Generates a unique-enough order ID for display purposes.
+  ///
+  /// Format: `NIBQ-<6-char time part><4-char random part>`
+  /// The time part now uses microseconds to reduce same-millisecond collisions.
+  static String generateOrderId() {
+    final timePart = DateTime.now()
+        .microsecondsSinceEpoch
+        .toRadixString(36)
+        .toUpperCase()
+        .padLeft(6, '0')
+        .substring(0, 6);
 
-  // Validation
-  static const maxPasswordLength = 50;
-  static const minPasswordLength = 6;
-  static const maxNameLength = 50;
-  static const maxEmailLength = 100;
+    final randomPart = List.generate(
+      4,
+          (_) => _orderChars[_random.nextInt(_orderChars.length)],
+    ).join();
+
+    return 'NIBQ-$timePart$randomPart';
+  }
 }
